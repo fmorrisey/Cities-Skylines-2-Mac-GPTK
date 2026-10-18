@@ -1,0 +1,77 @@
+Cities-Skylines-2-Mac-GPTK
+Copyright (c) 2026 Forrest Morrisey
+
+This product is licensed under the MIT License. See LICENSE for the full text.
+
+================================================================================
+IMPORTANT LIMITATIONS REGARDING APPLE SOFTWARE
+================================================================================
+
+The MIT License in this repository covers ONLY the shell scripts, the C source
+in launcher-bypass/, and the documentation authored here. It does NOT extend to
+any Apple software.
+
+NOT COVERED, AND NOT DISTRIBUTED HERE
+
+    D3DMetal.framework
+    libd3dshared.dylib
+    libmetalirconverter.dylib
+    libdxcompiler.dylib
+    libdxccontainer.dylib
+    libdxilconv.dylib
+    d3d11.dll / d3d12.dll / dxgi.dll / nvapi64.dll / nvngx-on-metalfx.dll
+      (the PE-side forwarders shipped in the GPTK redist)
+    any other component of Apple's Game Porting Toolkit
+
+These remain the property of Apple Inc. and are governed solely by Apple's own
+license terms. Apple's licensing does not permit redistributing them, so no
+Apple binary appears in this repository and none may be added.
+
+HOW THE SCRIPTS OBTAIN THEM
+
+The graft scripts here operate on a Game Porting Toolkit redist that YOU
+download from Apple yourself, using your own Apple Developer account, and mount
+locally. Nothing is fetched, bundled, vendored, or mirrored by this project.
+
+ENFORCEMENT
+
+This boundary is enforced mechanically, not merely by convention:
+
+    .gitignore                   denies binary and archive patterns
+    scripts/check-no-binaries.sh inspects the git index by filename,
+                                 file size, and magic bytes
+    .githooks/pre-commit         runs the above on every commit
+
+Enable the hook after cloning:
+
+    git config core.hooksPath .githooks
+
+================================================================================
+OTHER THIRD-PARTY SOFTWARE
+================================================================================
+
+DESCRIBED AND INVOKED, BUT NOT DISTRIBUTED HERE
+
+    cs2-macos-patcher     An IL patcher (Mono.Cecil) that NOPs the Wine-specific
+                          Colossal.IO directory-enumeration throw and enables
+                          Paradox Mods. This repo DOCUMENTS how to run it and
+                          LINKS to it (see docs/mono-il-patch.md). No part of it
+                          is vendored here; it is the property of its authors and
+                          governed by its own license. Use it per that license.
+
+    Cities: Skylines II   Property of Colossal Order / Paradox Interactive,
+                          governed by its EULA. This project modifies a copy you
+                          own and lawfully possess; it ships none of the game's
+                          code, assets, or the game's own dowser.exe.
+
+    Paradox Launcher /    Property of Paradox Interactive. The launcher-bypass
+    "dowser.exe"          stub here is ORIGINAL work that REPLACES dowser.exe; it
+                          contains and reproduces none of Paradox's code.
+
+DESCRIBED, BUT NOT DISTRIBUTED
+
+    Wine / Wineskin / Porting Kit   (their respective licenses)
+    Unity Engine / Mono             (their respective licenses)
+    mingw-w64                       (used to build the stub; its own license)
+
+No source or binary from any of the above is included here.
