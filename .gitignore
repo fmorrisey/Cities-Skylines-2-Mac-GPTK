@@ -47,3 +47,6 @@ UEMinidump*
 *.swp
 *~
 local.env
+
+# built launcher stub (ship via GitHub Releases, never committed)
+*.exe

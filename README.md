@@ -1,92 +1,94 @@
-# Cities-Skylines-2-Mac-GPTK
+# Cities: Skylines II on a Mac 🏙️
 
-Scripts and field notes for running **Cities: Skylines II** (Unity, DirectX 11)
-on **Apple Silicon** through a Porting Kit / Wineskin wrapper with Apple's
-**Game Porting Toolkit (D3DMetal)**.
+Play **Cities: Skylines II** on an **Apple Silicon Mac** (M1/M2/M3/M4…), with
+mods, smoothly. This project gives you a couple of double-click setup helpers and
+plain-English instructions.
 
-Unlike many translated titles, CS2 renders *fine* under D3DMetal — the hard
-parts are everything around it: the Paradox launcher, a Wine-specific crash on
-startup, the keyboard/focus freeze, and getting Paradox Mods to load. This repo
-collects the fixes that got it to a smooth, modded, multi-hour session on an
-M-series Mac.
+> You still buy and download the game yourself (through Steam, inside a Mac game
+> wrapper like **Porting Kit** or **Whisky/CrossOver**). This project just applies
+> the handful of fixes that make it run well on a Mac. It changes files in a copy
+> of the game *you own*, and everything it changes is backed up and reversible.
+
+---
+
+## ⭐ Easy setup (for players)
+
+**What you need first:** Cities: Skylines II installed through Steam inside a Mac
+game wrapper that uses Apple's Game Porting Toolkit (Porting Kit is the common
+one). If the game already launches but misbehaves, you're in the right place.
+
+**Then just do this:**
+
+1. **Get this project.** Click the green **Code** button above → **Download ZIP**.
+   Double-click the ZIP to unzip it, and open the folder.
+2. **Double-click `Setup — Start Here.command`.**
+   - The first time, macOS may say *"unidentified developer."* Right-click the
+     file → **Open** → **Open**. (You only do this once.)
+   - A window opens and does everything automatically: it finds your game, skips
+     the clunky Paradox launcher, and sets the stable display mode. It backs up
+     anything it touches.
+3. **Double-click `Enable Mods.command`.**
+   - This turns on mods and fixes the black-screen-on-startup problem. Follow the
+     simple on-screen menu and choose **Patch**. If it offers to install something
+     it needs, say yes.
+4. **Launch Cities: Skylines II from Steam** and play.
+   - If the game ever freezes when you switch apps: in the game go to
+     **Options → Graphics → Display Mode → "Fullscreen Window"** and click Apply.
+     (The setup tries to set this for you, but doing it in-game makes it stick.)
+
+That's it. Mods are in the in-game **Paradox Mods** menu.
+
+**Something not working?** See [Troubleshooting](docs/troubleshooting.md).
+
+---
+
+## What each helper does (plain version)
+
+| You double-click… | …and it |
+|---|---|
+| **Setup — Start Here.command** | Finds your game, swaps the Paradox launcher for a tiny "just start the game" file, writes the Steam ID file, and sets the no-freeze display mode. All backed up. |
+| **Enable Mods.command** | Downloads the trusted community patcher and runs its guided menu to turn on mods + fix the startup crash. |
+
+Prefer the command line or want the details? Everything the helpers do is also
+written out step-by-step in **[docs/README.md](docs/README.md)**.
+
+---
+
+## The fixes, briefly
+
+- **Skip the Paradox launcher** — Steam starts the launcher, which is flaky on
+  Mac; we replace it with a tiny pass-through so the game starts directly.
+  ([details](launcher-bypass/README.md))
+- **Black screen / startup crash** — a Mac/Wine-only error in the game's file
+  code; fixed by the community patcher. ([details](docs/mono-il-patch.md))
+- **The freeze when you switch apps** — caused by exclusive fullscreen; fixed by
+  using **Fullscreen Window** (borderless). ([details](docs/focus-freeze-fix.md))
+- **Mods** — tips, and which scary-looking log messages are actually harmless.
+  ([mods](docs/modding.md) · [log noise](docs/benign-log-noise.md))
+
+---
+
+## For tinkerers
+
+- Building the launcher stub yourself, the D3DMetal "graft" scripts for a fresh
+  wrapper, and all the technical notes live in [docs/README.md](docs/README.md)
+  and [scripts/](scripts/).
+- After cloning with `git`, enable the safety hook: `git config core.hooksPath .githooks`
 
 > ### ⚠️ No Apple binaries here
-> Apple's GPTK license does not permit redistributing D3DMetal. This repo ships
-> **scripts, source, and documentation only**; the graft scripts operate on a
-> redist *you* download from Apple with your own developer account. A pre-commit
-> hook blocks binaries from ever being committed.
+> Apple's Game Porting Toolkit can't be redistributed. This project ships
+> **only** scripts, source, and docs — never any Apple file. A pre-commit hook
+> enforces that. You download the Game Porting Toolkit from Apple yourself.
 
-> ### ⚠️ Unsupported, and it edits a game you own
-> This bypasses a game launcher, replaces the graphics translation layer with
-> **beta** libraries, and patches game assemblies. Not supported by Apple,
-> CodeWeavers, Porting Kit, Paradox, or Colossal Order. Back up first — the
-> scripts insist on it.
+> ### ⚠️ Unsupported
+> This bypasses a launcher, patches game files, and (optionally) swaps in beta
+> graphics libraries. Not supported by Apple, Paradox, Colossal Order, or the
+> wrapper makers. It makes backups, but use it at your own risk.
 
-## What's here
+## License & credits
 
-| Area | What it fixes | Where |
-|---|---|---|
-| **Launcher bypass** | Steam launches the Paradox launcher (`dowser.exe`), which is unreliable under Wine | [`launcher-bypass/`](launcher-bypass/) |
-| **Focus-freeze fix** | Exclusive fullscreen hard-locks on focus loss; input dies, Cmd+Tab can't recover | [`docs/focus-freeze-fix.md`](docs/focus-freeze-fix.md) |
-| **Startup crash** | `Colossal.IO` throws an `IOException` enumerating directories under Wine → black screen | [`docs/mono-il-patch.md`](docs/mono-il-patch.md) |
-| **Modding** | Paradox Mods, playsets, and which errors are safe to ignore | [`docs/modding.md`](docs/modding.md) |
-| **D3DMetal graft** | Only needed for a *fresh* bottle — overlay a newer GPTK into the wrapper | [`scripts/`](scripts/) + [Halo repo notes](#the-graft) |
-| **Log noise** | The flood of benign errors so a crash watcher doesn't cry wolf | [`docs/benign-log-noise.md`](docs/benign-log-noise.md) |
-
-**Start here:** [`docs/README.md`](docs/README.md) — the full setup in order.
-
-## Quick start (assuming a working Wine/GPTK bottle)
-
-```bash
-# 1. Bypass the Paradox launcher
-#    (build the stub, back up the original, drop the stub in)
-cd launcher-bypass && ./build.sh          # produces dowser.exe
-#    see launcher-bypass/README.md for the install step
-
-# 2. Tell Steam we own the game without its launcher
-cp config/steam_appid.txt "<...>/steamapps/common/Cities Skylines II/steam_appid.txt"
-
-# 3. Patch the startup IOException (uses the upstream cs2-macos-patcher tool)
-#    see docs/mono-il-patch.md
-
-# 4. In-game: Options -> Graphics -> Display Mode -> "Fullscreen Window"
-#    (NOT exclusive Fullscreen — see docs/focus-freeze-fix.md)
-```
-
-## The graft
-
-If you're putting CS2 in its **own** bottle (rather than reusing an already-grafted
-one), you may need a newer GPTK D3DMetal than the wrapper ships. The scripts here
-(`backup-wrapper.sh`, `overlay-gptk.sh`, `restore-*.sh`) are the same ones proven
-in the companion repo and are parameterized by `WRAPPER_APP` / `GPTK_VOLUME`:
-
-```bash
-export WRAPPER_APP="/Applications/Ported Games/Cities Skylines 2.app"
-export GPTK_VOLUME="/Volumes/Evaluation environment for Windows games 4.0 beta 2"
-./scripts/backup-wrapper.sh
-./scripts/overlay-gptk.sh --dry-run
-./scripts/overlay-gptk.sh --execute
-```
-
-Roll back with `./scripts/restore-d3dmetal-v2.1.sh`. Every destructive script
-dry-runs first, refuses to touch a running wrapper, and verifies backups before
-writing.
-
-## Enable the safety hook after cloning
-
-```bash
-git config core.hooksPath .githooks
-```
-
-## Credits
-
-- The startup `IOException` fix uses the upstream **cs2-macos-patcher** IL patcher
-  (see [`docs/mono-il-patch.md`](docs/mono-il-patch.md) for the link) — we invoke
-  it, we don't re-host it.
-- Apple **Game Porting Toolkit** / D3DMetal — downloaded by you from Apple; never
-  bundled here.
-
-## License
-
-MIT for the scripts, source, and docs — see [LICENSE](LICENSE). See [NOTICE](NOTICE)
-for the Apple-software boundary and other third-party software referenced.
+MIT for the scripts, source, and docs — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+The mod/startup fix is powered by the upstream
+**[cs2-macos-patcher](https://github.com/alien-agent/cs2-macos-patcher)** by
+alien-agent (downloaded by the helper, not bundled here). Thanks to the Porting
+Kit, Wine, and Cities: Skylines modding communities.
