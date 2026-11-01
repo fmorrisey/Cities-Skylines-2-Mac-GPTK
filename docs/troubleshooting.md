@@ -33,6 +33,27 @@ The launcher bypass didn't install. Re-run **`Setup — Start Here.command`**. I
 says it couldn't get the launcher file, publish/download `dowser.exe` from this
 project's **Releases** page into the `launcher-bypass` folder and run setup again.
 
+### The game stopped launching (or black-screens) right after a Steam update
+Steam updates rewrite the game's files, which **undoes both fixes at once**: the
+launcher bypass is replaced by the real Paradox launcher (so nothing opens), and
+the startup patch is removed (so you'd get the black screen). This happens after
+**every** update, beta switch, or "Verify integrity" — it's normal, and it takes
+two minutes to redo:
+
+1. Quit the game. Double-click **`Setup — Start Here.command`** again — this
+   restores the launcher bypass.
+2. Double-click **`Enable Mods.command`** again. **Heads-up:** it may say
+   **"● Already patched"**. Right after an update that's wrong (it's comparing
+   against the *old* backup files). Choose **Re-Patch** anyway. You should see each
+   file report **"fixes applied"** — if a file says "SKIP", it really was patched.
+3. Check **Options → Graphics → Display Mode → "Fullscreen Window"** — updates
+   can quietly reset it to exclusive fullscreen.
+
+One more thing after a *big* update: the **first launch can show a completely
+black world** with the menus and road names still visible. That's the graphics
+layer building the game's new shaders, not a broken install — give it a few
+minutes, or quit and launch once more.
+
 ### My mods don't show up in-game
 Mods load **only when the game starts**. If you subscribed or changed your mod
 playset while playing, **fully quit and relaunch** — there's no live reload.
